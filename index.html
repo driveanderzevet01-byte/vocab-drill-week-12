@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Vocab Drill | Week 12 (Days 31-33) | Proctored Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0c15;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #e2e8f0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #11131f;
+            border-radius: 32px;
+            padding: 24px 28px;
+            border: 1px solid #252a41;
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.6);
+        }
+
+        h1, h2, h3 {
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #a78bfa, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 2rem;
+        }
+
+        .timer-panel {
+            background: #0b0d16;
+            padding: 12px 24px;
+            border-radius: 60px;
+            display: inline-flex;
+            align-items: baseline;
+            gap: 16px;
+            margin-bottom: 24px;
+            border-left: 5px solid #facc15;
+            font-weight: 600;
+        }
+
+        .timer {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #facc15;
+            background: #00000030;
+            padding: 0 12px;
+            border-radius: 40px;
+        }
+
+        .card {
+            background: #151b2b;
+            border-radius: 28px;
+            padding: 24px;
+            margin-bottom: 28px;
+            border: 1px solid #2d3450;
+        }
+
+        label {
+            font-weight: 500;
+            display: block;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            color: #b9c3e0;
+        }
+
+        input, select {
+            background: #0a0e1a;
+            border: 1px solid #2f3a5c;
+            padding: 12px 16px;
+            border-radius: 20px;
+            width: 100%;
+            color: #f1f5f9;
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #818cf8;
+            box-shadow: 0 0 0 2px rgba(129,140,248,0.3);
+        }
+
+        button {
+            background: #2d3a5e;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 20px;
+            margin-right: 12px;
+        }
+
+        button.primary {
+            background: #4f46e5;
+            box-shadow: 0 4px 14px rgba(79,70,229,0.4);
+        }
+
+        button.primary:hover {
+            background: #6366f1;
+            transform: scale(0.98);
+        }
+
+        button.danger {
+            background: #dc2626;
+        }
+
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .vocab-item {
+            background: #1a1f33;
+            padding: 12px 16px;
+            border-radius: 20px;
+            border-left: 4px solid #818cf8;
+        }
+
+        .vocab-word {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #facc15;
+        }
+
+        .question-card {
+            background: #13182a;
+            padding: 18px;
+            border-radius: 24px;
+            margin-bottom: 16px;
+            border: 1px solid #293054;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 8px;
+        }
+
+        .option label {
+            margin: 0;
+            font-weight: normal;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .wordbank-box {
+            background: #0c1020;
+            padding: 18px;
+            border-radius: 24px;
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            border: 1px solid #2d3a66;
+        }
+
+        .wordbank-word {
+            background: #1e2a4a;
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .popup-card {
+            background: #1a1f2e;
+            max-width: 900px;
+            width: 95%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 28px;
+            border-radius: 36px;
+            box-shadow: 0 25px 40px black;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .answer-summary {
+            background: #0e1222;
+            padding: 16px;
+            border-radius: 24px;
+            font-family: 'Segoe UI', system-ui, monospace;
+            font-size: 0.85rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .summary-question {
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2a3250;
+        }
+
+        .summary-question strong {
+            color: #facc15;
+        }
+
+        .summary-answer {
+            margin-left: 20px;
+            color: #a5b4fc;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .no-print, .timer-panel, button, .popup, #summaryPopup {
+                display: none !important;
+            }
+            .print-pattern {
+                background: repeating-linear-gradient(45deg, #f0f2f5 0px, #f0f2f5 3px, #ffffff 3px, #ffffff 15px);
+                padding: 20px;
+            }
+            .container {
+                background: white;
+                color: black;
+                box-shadow: none;
+            }
+            .answer-summary {
+                background: #f8f9fc;
+                border: 1px solid #ccc;
+                color: black;
+            }
+            .summary-question strong {
+                color: #1e293b;
+            }
+            .summary-answer {
+                color: #334155;
+            }
+        }
+
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 25px;
+            color: #5a668a;
+        }
+        hr {
+            border-color: #2a3250;
+        }
+        .section-title {
+            margin: 20px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #4f46e5;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="appRoot">
+    <!-- LOGIN PAGE -->
+    <div id="loginPage">
+        <div class="card" style="max-width: 550px; margin: 40px auto;">
+            <h1 class="gradient-text">📘 VOCAB DRILL</h1>
+            <p style="margin: 8px 0 20px 0;">Week 12 - Proctored vocabulary assessment (Days 31, 32, 33)</p>
+            <label>Student Name</label>
+            <input type="text" id="studentName" placeholder="e.g., Ahmad Fauzi">
+            <label>Student ID</label>
+            <input type="text" id="studentId" placeholder="e.g., 22051234">
+            <label>Study Program</label>
+            <input type="text" id="studyProgram" placeholder="e.g., English Literature">
+            <label>Select Day</label>
+            <select id="daySelect">
+                <option value="day31">Day 31 (Vocabulary 3001-3100)</option>
+                <option value="day32">Day 32 (Vocabulary 3101-3200)</option>
+                <option value="day33">Day 33 (Vocabulary 3201-3300)</option>
+            </select>
+            <button class="primary" id="startBtn" style="width: 100%; margin-top: 28px;">▶ Begin Session</button>
+        </div>
+    </div>
+
+    <!-- VOCAB LIST PAGE (5 min timer) -->
+    <div id="vocabListPage" class="hidden">
+        <div class="timer-panel no-print">
+            <span>📖 Review mode:</span>
+            <span class="timer" id="listTimer">05:00</span>
+            <span>time left</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <h2>📚 Vocabulary List: <span id="listDayLabel"></span></h2>
+            <button id="proceedToDrillBtn" class="primary">➡ Proceed to Drill</button>
+        </div>
+        <div class="vocab-grid" id="vocabListContainer"></div>
+    </div>
+
+    <!-- DRILL PAGE (25 min timer) -->
+    <div id="drillPage" class="hidden">
+        <div class="timer-panel no-print">
+            <span>✍️ Drill in progress:</span>
+            <span class="timer" id="drillTimer">25:00</span>
+            <span>auto-submit at 0</span>
+        </div>
+        <div id="drillQuestionsContainer"></div>
+        <div style="margin: 20px 0;">
+            <button id="submitDrillBtn" class="primary">✅ Submit Exam & Show Summary</button>
+        </div>
+    </div>
+
+    <!-- SUMMARY + PRINT POPUP -->
+    <div id="summaryPopup" class="popup hidden">
+        <div class="popup-card">
+            <h3>📄 Submission Summary (Questions & Answers)</h3>
+            <div id="summaryContent" class="answer-summary"></div>
+            <div style="margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap;">
+                <button id="closeSummaryBtn" class="danger">Close</button>
+                <button id="printSummaryBtn" class="primary">🖨️ Print / Save as PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ======================= FULL VOCAB DATABASE (from file - Week 12) =======================
+    const fullVocab = [];
+
+    function pushEntries(arr) {
+        for (let i = 0; i < arr.length; i += 3) {
+            fullVocab.push({ word: arr[i], eng: arr[i+1], ind: arr[i+2] });
+        }
+    }
+
+    // DAY 31 (3001-3100)
+    const day31Raw = ["forego","to go before","mendahului","foreground","front part","latar depan","forehead","upper face","dahi","foreign","from another country","asing","foreigner","person from abroad","orang asing","forejudge","to judge beforehand","menghakimi terlebih dahulu","foreknowledge","prior knowledge","pengetahuan sebelumnya","foreman","supervisor","mandor","foreordain","to predestine","menentukan sebelumnya","foreordination","predestination","takdir","forepeak","front ship compartment","kompartemen depan kapal","forerun","to precede","mendahului","foresail","front sail","layar depan","foresee","to predict","meramalkan","foreseeable","predictable","dapat diramalkan","foreshore","shore area","pantai","foresight","planning ahead","pandangan ke depan","foretell","to predict","meramalkan","forethought","prior planning","perencanaan sebelumnya","forfeit","to lose as penalty","menyita","forfend","to prevent","mencegah","forge","to shape metal; to fake","menempa; memalsukan","forgery","fake signature/document","pemalsuan","forgo","to give up","melepaskan","form","shape; document","bentuk; formulir","formal","official","resmi","formally","officially","secara resmi","formation","arrangement","formasi","former","previous","sebelumnya","formerly","previously","dulu","formidable","intimidating","tangguh","formula","mathematical rule","rumus","forswear","to renounce","mengingkari","forte","strong point","keahlian","forth","forward","ke depan","forthright","direct","terus terang","fortify","to strengthen","memperkuat","fortitude","courage","ketabahan","fortunate","lucky","beruntung","forum","meeting place","forum","forward","toward front; to send","ke depan; meneruskan","foster","to nurture","membina","foul","dirty","kotor","foundation","base","fondasi","founder","person who starts; to sink","pendiri; tenggelam","foursome","group of four","kelompok empat","fracture","break","patah tulang","fragile","easily broken","rapuh","fragrance","pleasant smell","wewangian","fragrant","sweet-smelling","harum","frailty","weakness","kelemahan","frame","structure","bingkai","franchise","business license","waralaba","frank","honest","terus terang","frankincense","resin incense","kemenyan","frantic","wild with worry","kalang kabut","fraternal","brotherly","persaudaraan","fraud","deception","penipuan","fraudulence","deceitfulness","kecurangan","fraudulent","dishonest","curang","fray","fight","pertengkaran","free","without cost; unrestricted","gratis; bebas","free parking","no-cost parking","parkir gratis","free trade","unrestricted commerce","perdagangan bebas","freemason","secret society member","freemason","freethinker","independent thinker","pemikir bebas","freight","cargo","barang muatan","frequency","rate of occurrence","frekuensi","frequent","occurring often","sering","frequently","often","sering","fresco","wall painting","fresko","fresh","new; not stale","segar","freshness","newness","kesegaran","fretful","worried","gelisah","friendly","kind","ramah","fright","fear","ketakutan","frighten","to scare","menakuti","frightful","terrifying","mengerikan","frigid","very cold","sangat dingin","frigidarium","cold room","ruangan dingin","frivolity","silliness","keremehan","frivolous","trivial","remeh","frizz","to curl hair","mengeritingkan","frizzle","to fry crisp","menggoreng garing","frolicsome","playful","suka bermain","from now","starting now","mulai sekarang","frontier","border","perbatasan","frowzy","unkempt","kusut","frugal","thrifty","hemat","fruition","realization","terwujud","fruitless","useless","sia-sia","frustrate","to discourage","membuat frustrasi","frying pan","cooking pan","wajan","fuel","energy source","bahan bakar","fugacious","fleeting","cepat berlalu","fulcrum","pivot point","tumpuan","fulfill","to satisfy","memenuhi","full","complete","penuh","full-blown","fully developed","matang","fully","completely","sepenuhnya"];
+    pushEntries(day31Raw);
+    
+    // DAY 32 (3101-3200)
+    const day32Raw = ["fulminate","to explode","meledak","fulsome","excessive","berlebihan","fume","smoke; to be angry","asap; marah","fumigate","to disinfect","mengasapi","fun","enjoyment","kesenangan","function","purpose","fungsi","functionary","official","pejabat","fund","money reserve","dana","fundamental","basic","mendasar","funding","financial support","pendanaan","fund-raising","collecting money","penggalangan dana","fungible","interchangeable","dapat dipertukarkan","fungous","like fungus","seperti jamur","fungus","mushroom-like organism","jamur","funny","amusing","lucu","furbish","to polish","mengilapkan","furlong","distance unit (201m)","furlong","furlough","leave of absence","cuti","furnish","to supply","menyediakan","furnished","equipped with furniture","berperabot","furniture","household items","perabot","furrier","fur trader","pedagang bulu","further","more distant; additionally","lebih jauh; selanjutnya","furtherance","advancement","kemajuan","furtive","secretive","sembunyi-sembunyi","fury","rage","kemarahan","fuse","to join; safety device","melebur; sekering","fusible","able to be melted","dapat dilebur","fusion","merging","fusi","futile","useless","sia-sia","futurist","forward-looking person","futuris","gaiety","cheerfulness","kegembiraan","gaily","happily","dengan riang","gain","profit; to obtain","keuntungan; memperoleh","gainful","profitable","menguntungkan","gait","manner of walking","langkah","gallant","brave; chivalrous","gagah","gallery","art room","galeri","galore","in abundance","berlimpah","galvanic","electric","galvanik","galvanism","electricity from chemicals","galvanisme","galvanize","to shock into action","membangkitkan","gamble","to bet","berjudi","gambol","to frolic","bermain-main","gamester","gambler","penjudi","gamut","complete range","seluruh rentang","gang","group of criminals","geng","gap","opening","celah","garage","parking building","garasi","garlic","pungent bulb","bawang putih","garnish","to decorate food","menghias hidangan","garrison","military post","garnisun","garrote","to strangle","mencekik","garrulous","talkative","banyak bicara","gas station","fuel stop","pom bensin","gaseous","like gas","berbentuk gas","gasp","sudden breath","terengah-engah","gastric","stomach-related","lambung","gastritis","stomach inflammation","gastritis","gastronomy","fine cooking","gastronomi","gather","to collect","mengumpulkan","gathering","assembly","kumpulan","gauge","to measure","mengukur","gendarme","police officer","polisi","genealogist","family tree researcher","ahli silsilah","genealogy","family history","silsilah","general","broad; military rank","umum; jenderal","generality","generalization","generalisasi","generalize","to make broad statement","menggeneralisasi","generally","usually","umumnya","generate","to produce","menghasilkan","generic","general","generik","generosity","kindness","kemurahan hati","generous","giving","dermawan","generously","in a giving way","dengan murah hati","genesis","beginning","awal mula","genial","friendly","ramah","geniality","friendliness","keramahan","genital","reproductive organ","kelamin","genitive","possessive case","genitif","genre","category","genre","genteel","refined","sopan","gentile","non-Jewish","non-Yahudi","gentle","mild","lembut","geology","earth science","geologi","germane","relevant","relevan","germinate","to sprout","berkecambah","gestation","pregnancy period","kehamilan","gesticulate","to gesture","memberi isyarat","gesture","body movement","gerak isyarat","get a phone call","receive call","mendapat telepon","get a ticket","receive a fine","mendapat tilang","get off","to descend","turun","get paid","receive salary","dibayar","get together","to meet","berkumpul","get used to","to become accustomed","terbiasa","ghastly","horrific","mengerikan","ghost","spirit","hantu","gibe","to mock","mengejek","giddy","dizzy","pusing"];
+    pushEntries(day32Raw);
+    
+    // DAY 33 (3201-3300)
+    const day33Raw = ["gift","present","hadiah","gigantic","huge","raksasa","give","to hand over","memberi","give a call","to phone","menelepon","given","specified; granted","tertentu; diberikan","giver","donor","pemberi","glacial","icy","glasial","glacier","ice mass","gletser","glad","happy","senang","glance","quick look","sekilas","glass cabinet","display case","lemari kaca","glazier","glass worker","tukang kaca","gleam","to shine","bersinar","gleaming","shining","berkilau","glee","joy","kegembiraan","glidden","to make glad","menggembirakan","glide","to slide","meluncur","glimmer","faint light","cahaya redup","glimpse","brief look","pandangan sekilas","globose","spherical","bulat","globular","globe-shaped","bulat","gloomy","dark; sad","suram; muram","glorious","magnificent","mulia","glory","fame; honor","kemuliaan","glow","to shine softly","bercahaya","glutinous","sticky","lengket","gluttonous","greedy eater","rakus","gnash","to grind teeth","menggeretakkan gigi","go on vacation","take holiday","pergi berlibur","go shopping","buy things","pergi berbelanja","goal","objective","tujuan","godly","pious","saleh","goods","merchandise","barang","good-will","kindness","niat baik","Gordian knot","complex problem","masalah rumit","gosling","young goose","anak angsa","gossamer","delicate","halus","gourd","hard-skinned fruit","labu","gourmand","food lover","pencinta makanan","govern","to rule","memerintah","government","ruling body","pemerintah","grab","to seize","merebut","grace","elegance","keanggunan","graceless","clumsy","canggung","gracious","courteous","ramah","gradation","gradual change","gradasi","gradient","slope","kemiringan","graduation","ceremony","wisuda","granary","grain storage","lumbung","grand","impressive","megah","grandeur","splendor","kemegahan","grandiloquent","pompous","bombastis","grandiose","impressive","megah","grant","to give; funds","memberikan; hibah","grantee","recipient","penerima hibah","grantor","giver","pemberi hibah","granular","grainy","berbutir","granulate","to form grains","menggumpalkan","granule","small grain","butiran kecil","grapple","to struggle","bergumul","grasp","to hold; to understand","menggenggam; memahami","grateful","thankful","bersyukur","gratification","satisfaction","kepuasan","gratify","to please","memuaskan","gratitude","thankfulness","rasa syukur","gratuitous","unnecessary","tidak perlu","gratuity","tip","uang tip","grave","serious; tomb","serius; makam","gravity","seriousness; force","gravitasi; keseriusan","great","very large","besar","greed","excessive desire","keserakahan","greedy","desiring more","serakah","greet","to welcome","menyapa","gregarious","sociable","suka bergaul","grenadier","soldier","grenadir","grief","sadness","kesedihan","grievance","complaint","keluhan","grieve","to mourn","berduka","grievous","severe","berat","grimace","facial expression of pain","meringis","grind","to crush","menggiling","grindstone","sharpening stone","batu asah","grisly","gruesome","mengerikan","grocery","food store","toko kelontong","grocery store","supermarket","toko kelontong","gross","total; disgusting","kotor; menjijikkan","grotesque","bizarre","aneh","grotto","small cave","gua kecil","ground","earth; basis","tanah; dasar","group","collection","kelompok","grow","to increase size","tumbuh","growth","increase","pertumbuhan","grudge","resentment","dendam","guarantee","to assure","menjamin","guard","to protect","menjaga","guess","to suppose","menebak","guest speaker","invited speaker","pembicara tamu","guide","to direct","memandu","guidebook","instruction book","buku panduan","guile","cunning","kelicikan"];
+    pushEntries(day33Raw);
+
+    function getVocabByDay(day) {
+        if (day === 'day31') return fullVocab.slice(0, 100);
+        if (day === 'day32') return fullVocab.slice(100, 200);
+        return fullVocab.slice(200, 300);
+    }
+
+    // Pre-built questions based on the original file format (Part A, Part B, Part C from Week 12)
+    const practiceQuestions = {
+        day31: {
+            partA: [
+                { text: "The company plans to ______ a new training program next month.", options: ["fortify", "foster", "forum", "foundation"], correct: "foster" },
+                { text: "The school was built on a strong ______ of academic excellence.", options: ["founder", "formula", "foundation", "frequency"], correct: "foundation" },
+                { text: "Many students study abroad to gain a broader understanding of ______ cultures.", options: ["foreign", "foresight", "former", "fortitude"], correct: "foreign" },
+                { text: "The manager showed great ______ during the financial crisis.", options: ["foresight", "fragrance", "formation", "freight"], correct: "foresight" },
+                { text: "The old bridge developed a serious ______ after the earthquake.", options: ["frontier", "fracture", "fruition", "fragrance"], correct: "fracture" },
+                { text: "The glass vase is very ______, so handle it carefully.", options: ["frantic", "formal", "fragile", "frequent"], correct: "fragile" },
+                { text: "The government is trying to prevent ______ in public procurement.", options: ["fraud", "franchise", "fortitude", "foresail"], correct: "fraud" },
+                { text: "The teacher tried to ______ creativity among the students.", options: ["foster", "forge", "fortify", "formulate"], correct: "foster" },
+                { text: "She felt ______ after working for twelve hours without a break.", options: ["fortunate", "frustrated", "frank", "frigid"], correct: "frustrated" },
+                { text: "The company offers ______ parking for all employees.", options: ["frequent", "free", "foreign", "formal"], correct: "free" },
+                { text: "The scientists were able to ______ the ancient manuscript.", options: ["fracture", "formulate", "forge", "foresee"], correct: "foresee" },
+                { text: "The coach spoke in a ______ manner about the team's weaknesses.", options: ["foreign", "frank", "frantic", "formidable"], correct: "frank" },
+                { text: "Heavy rain can ______ construction projects.", options: ["frustrate", "fortify", "foresee", "freight"], correct: "frustrate" },
+                { text: "Regular exercise helps ______ the immune system.", options: ["foster", "fortify", "fracture", "forge"], correct: "fortify" },
+                { text: "The students presented their research at an online ______.", options: ["formula", "forum", "founder", "foreman"], correct: "forum" },
+                { text: "The manager used a simple ______ to calculate the cost.", options: ["formula", "formation", "foundation", "forum"], correct: "formula" },
+                { text: "The company's success was the ______ of years of hard work.", options: ["fruition", "frequency", "fracture", "frontier"], correct: "fruition" },
+                { text: "The explorer crossed the country's western ______.", options: ["frequency", "frontier", "fragrance", "franchise"], correct: "frontier" },
+                { text: "She wore a necklace with a pleasant ______ of flowers around it.", options: ["freight", "fragrance", "forum", "fracture"], correct: "fragrance" },
+                { text: "The employee was promoted because of his ______ work ethic.", options: ["former", "frequent", "formidable", "forthright"], correct: "forthright" },
+                { text: "The shipment of goods arrived by ______ train.", options: ["freight", "fragrance", "forum", "franchise"], correct: "freight" },
+                { text: "The charity event raised money to ______ community programs.", options: ["foster", "foresee", "fracture", "founder"], correct: "foster" },
+                { text: "A good leader can ______ strong relationships among team members.", options: ["found", "foster", "freight", "fortify"], correct: "foster" },
+                { text: "The scientist tried to ______ future environmental changes.", options: ["foresee", "fracture", "franchise", "fragrance"], correct: "foresee" },
+                { text: "She remained ______ despite facing many challenges.", options: ["frantic", "fortunate", "forthright", "frugal"], correct: "fortunate" }
+            ],
+            partB: [
+                { text: "A person who establishes an organization or company.", options: ["founder", "foreman", "forum", "franchise"], correct: "founder" },
+                { text: "The ability to remain strong and brave during difficulties.", options: ["foresight", "fortitude", "frequency", "fruition"], correct: "fortitude" },
+                { text: "Honest and direct in speech or behavior.", options: ["frigid", "frantic", "forthright", "fragile"], correct: "forthright" },
+                { text: "The movement of goods from one place to another.", options: ["freight", "fracture", "frontier", "fragrance"], correct: "freight" },
+                { text: "An organized discussion meeting or platform for exchanging ideas.", options: ["formula", "foundation", "founder", "forum"], correct: "forum" },
+                { text: "To strengthen or make stronger.", options: ["foster", "fortify", "foresee", "forge"], correct: "fortify" },
+                { text: "A pleasant smell.", options: ["frequency", "fragrance", "fruition", "frontier"], correct: "fragrance" },
+                { text: "Careful use of money and resources.", options: ["fortunate", "frantic", "formal", "frugal"], correct: "frugal" },
+                { text: "To encourage the growth or development of something.", options: ["foster", "forge", "fracture", "fortify"], correct: "foster" },
+                { text: "A boundary between settled and unsettled regions.", options: ["franchise", "foundation", "frontier", "freight"], correct: "frontier" },
+                { text: "The successful achievement of something planned.", options: ["fruition", "formula", "frequency", "founder"], correct: "fruition" },
+                { text: "Extremely powerful, impressive, or difficult to overcome.", options: ["fragile", "formidable", "foreign", "formal"], correct: "formidable" },
+                { text: "Happening often.", options: ["foreign", "fortunate", "frequent", "forum"], correct: "frequent" },
+                { text: "To predict or know in advance.", options: ["fortify", "foster", "foresee", "forge"], correct: "foresee" },
+                { text: "A legal right to operate a business using a company's name and system.", options: ["franchise", "founder", "frontier", "foundation"], correct: "franchise" }
+            ],
+            wordBank: ["forge", "foreign", "formula", "foreman", "formal", "formation", "frequency", "found", "fresh", "frighten", "forward", "free", "former", "freshen", "fortunate"]
+        },
+        day32: {
+            partA: [
+                { text: "The charity organized a ______ campaign to collect money for disaster victims.", options: ["funding", "fund-raising", "fusion", "furniture"], correct: "fund-raising" },
+                { text: "A good education provides a ______ understanding of many subjects.", options: ["furtive", "fundamental", "gaseous", "gallant"], correct: "fundamental" },
+                { text: "The company received additional ______ from investors.", options: ["funding", "fuse", "functionary", "gallery"], correct: "funding" },
+                { text: "The school decided to ______ the classrooms with new computers.", options: ["furnish", "gather", "generate", "gauge"], correct: "furnish" },
+                { text: "The scientist was able to ______ enough data for the study.", options: ["gamble", "garnish", "gather", "galvanize"], correct: "gather" },
+                { text: "The manager used a survey to ______ employee satisfaction.", options: ["galvanize", "gauge", "gain", "generalize"], correct: "gauge" },
+                { text: "The motivational speech helped ______ the team into action.", options: ["fuse", "garnish", "galvanize", "fume"], correct: "galvanize" },
+                { text: "She hopes to ______ valuable experience during her internship.", options: ["gain", "generate", "gather", "fuse"], correct: "gain" },
+                { text: "The factory can ______ enough electricity to power the town.", options: ["gauge", "generate", "gather", "gain"], correct: "generate" },
+                { text: "The teacher asked students to avoid making conclusions that ______ too much.", options: ["germinate", "gather", "generalize", "gauge"], correct: "generalize" },
+                { text: "The businessman donated money out of pure ______.", options: ["gastritis", "generosity", "gait", "gamut"], correct: "generosity" },
+                { text: "The waiter was very ______ and helped every customer politely.", options: ["genial", "ghastly", "gaseous", "furtive"], correct: "genial" },
+                { text: "The writer became famous for a new literary ______.", options: ["genealogy", "genre", "gamut", "gallery"], correct: "genre" },
+                { text: "The seeds will ______ faster in warm soil.", options: ["gather", "fuse", "germinate", "gamble"], correct: "germinate" },
+                { text: "She communicated her ideas through hand ______.", options: ["gestures", "galleries", "furies", "functions"], correct: "gestures" },
+                { text: "We need to ______ all project members before making a decision.", options: ["gather", "furnish", "generate", "fuse"], correct: "gather" },
+                { text: "The students visited an art ______ during the trip.", options: ["gamut", "gallery", "gathering", "garage"], correct: "gallery" },
+                { text: "The mechanic parked the car inside the ______.", options: ["garage", "gallery", "gamut", "garrison"], correct: "garage" },
+                { text: "The recipe recommends adding fresh ______ to the soup.", options: ["garlic", "gait", "gauge", "gamut"], correct: "garlic" },
+                { text: "The speaker was so ______ that he talked for an hour without stopping.", options: ["gallant", "genial", "garrulous", "gaseous"], correct: "garrulous" },
+                { text: "The scientist explained the entire ______ of possibilities.", options: ["gamut", "gallery", "garage", "gain"], correct: "gamut" },
+                { text: "The manager's ______ attitude inspired the employees.", options: ["gallant", "gaseous", "ghastly", "furtive"], correct: "gallant" },
+                { text: "The students held a social ______ after the competition.", options: ["genre", "gathering", "genealogy", "gauge"], correct: "gathering" },
+                { text: "The engineer checked the fuel ______ before the trip.", options: ["gamut", "gauge", "gait", "galaxy"], correct: "gauge" },
+                { text: "The machine's main ______ is to package products efficiently.", options: ["function", "funding", "fusion", "furniture"], correct: "function" }
+            ],
+            partB: [
+                { text: "Money provided for a project or activity.", options: ["funding", "functionary", "fusion", "furniture"], correct: "funding" },
+                { text: "The basic and most important part of something.", options: ["gallant", "gaseous", "fundamental", "gamut"], correct: "fundamental" },
+                { text: "To provide a room or building with furniture or equipment.", options: ["fuse", "furnish", "gather", "gauge"], correct: "furnish" },
+                { text: "To estimate, measure, or judge something.", options: ["gauge", "gain", "gather", "genre"], correct: "gauge" },
+                { text: "To encourage people to take action.", options: ["germinate", "generate", "galvanize", "garnish"], correct: "galvanize" },
+                { text: "To produce or create.", options: ["gather", "gain", "generate", "garage"], correct: "generate" },
+                { text: "Kind and pleasant in manner.", options: ["genial", "ghastly", "gallant", "gaseous"], correct: "genial" },
+                { text: "A category or type of literature, music, or art.", options: ["genealogy", "genre", "gamut", "gallery"], correct: "genre" },
+                { text: "To begin to grow from a seed.", options: ["gamble", "gather", "germinate", "gauge"], correct: "germinate" },
+                { text: "Movement of the hands or body to express meaning.", options: ["gesture", "gait", "gamut", "gain"], correct: "gesture" },
+                { text: "A building where cars are kept.", options: ["gallery", "garage", "garrison", "gamut"], correct: "garage" },
+                { text: "Covering the complete range of something.", options: ["genial", "gamut", "gallant", "gaseous"], correct: "gamut" },
+                { text: "Extremely talkative.", options: ["genial", "gallant", "garrulous", "gaseous"], correct: "garrulous" },
+                { text: "Brave, noble, and courteous.", options: ["gallant", "gamut", "gauge", "gather"], correct: "gallant" },
+                { text: "The purpose or role of something.", options: ["fusion", "funding", "furniture", "function"], correct: "function" }
+            ],
+            wordBank: ["fun", "fungus", "gas station", "further", "fury", "general", "gaseous", "genealogy", "generosity", "get off", "get together", "get paid", "ghost", "gainful", "furniture"]
+        },
+        day33: {
+            partA: [
+                { text: "The company offered a money-back ______ if customers were not satisfied.", options: ["gratitude", "grievance", "guarantee", "growth"], correct: "guarantee" },
+                { text: "The teacher asked students to ______ their answers with evidence.", options: ["guide", "grant", "govern", "grasp"], correct: "grasp" },
+                { text: "The small business experienced rapid ______ after launching its online store.", options: ["growth", "grief", "gravity", "gratitude"], correct: "growth" },
+                { text: "Please ______ your guests to the conference room.", options: ["greet", "guess", "grind", "grab"], correct: "greet" },
+                { text: "The mayor is responsible for helping ______ the city.", options: ["guide", "govern", "grant", "grasp"], correct: "govern" },
+                { text: "The employee was ______ for the opportunity to attend the training.", options: ["gross", "greedy", "grateful", "gloomy"], correct: "grateful" },
+                { text: "Many students ______ after completing the final examination.", options: ["glow", "grieve", "glide", "gnash"], correct: "glow" },
+                { text: "The hikers stopped to ______ the mountain view.", options: ["guess", "grasp", "grow", "grind"], correct: "grasp" },
+                { text: "The charity received a large ______ from a local company.", options: ["grievance", "grant", "grudge", "gradient"], correct: "grant" },
+                { text: "The audience gave the ______ speaker a warm welcome.", options: ["guest speaker", "guidebook", "giver", "grantee"], correct: "guest speaker" },
+                { text: "Farmers store grain in a ______ after harvest.", options: ["grotto", "granary", "gradient", "grocery"], correct: "granary" },
+                { text: "The patient was advised to avoid foods high in ______.", options: ["gravity", "gratitude", "greed", "gluttonous behavior"], correct: "gluttonous behavior" },
+                { text: "The scientist measured the ______ of the planet.", options: ["gravity", "glow", "grant", "grief"], correct: "gravity" },
+                { text: "The students worked in a ______ to complete the project.", options: ["grievance", "grocery", "group", "grantor"], correct: "group" },
+                { text: "The manager promised to ______ additional resources if needed.", options: ["grant", "grow", "grind", "greet"], correct: "grant" },
+                { text: "The child tried to ______ the heavy box from the floor.", options: ["glide", "grab", "glow", "govern"], correct: "grab" },
+                { text: "After several years abroad, the company continued to ______.", options: ["grieve", "guess", "grow", "greet"], correct: "grow" },
+                { text: "The workers complained about an unresolved ______.", options: ["grievance", "gratitude", "glory", "granule"], correct: "grievance" },
+                { text: "The athlete earned ______ after winning the championship.", options: ["gravity", "grief", "glory", "greed"], correct: "glory" },
+                { text: "The family felt deep ______ after losing their pet.", options: ["grievance", "grief", "grandeur", "gratitude"], correct: "grief" },
+                { text: "The professor encouraged students to express ______ for help received.", options: ["gratitude", "gravity", "greed", "growth"], correct: "gratitude" },
+                { text: "The old castle stood on ______ overlooking the sea.", options: ["ground", "growth", "grocery", "gradient"], correct: "ground" },
+                { text: "The traveler bought fruit at a nearby ______ store.", options: ["guest speaker", "grocery", "granary", "grotto"], correct: "grocery" },
+                { text: "The child tried to ______ the meaning of the difficult word.", options: ["guess", "greet", "grow", "govern"], correct: "guess" },
+                { text: "The company hired a tour ______ to assist visitors.", options: ["grantor", "guidebook", "guide", "giver"], correct: "guide" }
+            ],
+            partB: [
+                { text: "A formal promise that something will happen or be true.", options: ["grievance", "gratitude", "guarantee", "glory"], correct: "guarantee" },
+                { text: "To increase in size, amount, or development.", options: ["grow", "greet", "grind", "glow"], correct: "grow" },
+                { text: "A person invited to speak at an event.", options: ["guide", "guest speaker", "giver", "grantor"], correct: "guest speaker" },
+                { text: "A feeling of thankfulness.", options: ["greed", "gravity", "gratitude", "growth"], correct: "gratitude" },
+                { text: "A complaint about unfair treatment.", options: ["grievance", "glory", "grotto", "grant"], correct: "grievance" },
+                { text: "The force that attracts objects toward Earth.", options: ["gradient", "growth", "gratitude", "gravity"], correct: "gravity" },
+                { text: "To take hold of something firmly.", options: ["glide", "greet", "grasp", "grant"], correct: "grasp" },
+                { text: "A building used to store grain.", options: ["grocery", "granary", "grotto", "ground"], correct: "granary" },
+                { text: "Great honor, praise, or admiration.", options: ["grief", "gratitude", "glory", "greed"], correct: "glory" },
+                { text: "To welcome someone politely.", options: ["govern", "greet", "grind", "grab"], correct: "greet" },
+                { text: "A person who provides directions or assistance.", options: ["guide", "giver", "grantor", "guest speaker"], correct: "guide" },
+                { text: "A collection of people considered together.", options: ["growth", "grievance", "group", "granule"], correct: "group" },
+                { text: "A sum of money given for a particular purpose.", options: ["grant", "glory", "gravity", "grocery"], correct: "grant" },
+                { text: "A place where food and household goods are sold.", options: ["granary", "grocery", "grotto", "gradient"], correct: "grocery" },
+                { text: "To control or manage an organization, country, or area.", options: ["grasp", "grant", "govern", "greet"], correct: "govern" }
+            ],
+            wordBank: ["group", "gravity", "guest speaker", "grant", "grievance", "govern", "granary", "grasp", "growth", "guarantee", "gratitude", "glory", "greet", "guide", "grocery"]
+        }
+    };
+
+    // Global state
+    let currentDay = 'day31';
+    let student = { name: '', id: '', program: '' };
+    let listTimerInterval = null, drillTimerInterval = null;
+    let listTime = 300;
+    let drillTime = 1500;
+    let drillActive = false;
+    let submitted = false;
+    let tabViolations = 0;
+    let selectedAnswers = {};
+    let currentQuestionsStore = { partA: [], partB: [], partC: [] };
+
+    const loginDiv = document.getElementById('loginPage');
+    const listDiv = document.getElementById('vocabListPage');
+    const drillDiv = document.getElementById('drillPage');
+    const summaryPopup = document.getElementById('summaryPopup');
+
+    function clearAllTimers() {
+        if (listTimerInterval) clearInterval(listTimerInterval);
+        if (drillTimerInterval) clearInterval(drillTimerInterval);
+    }
+
+    // Anti-cheat system
+    function initAntiCheat() {
+        window.addEventListener('blur', () => { if (drillActive && !submitted) handleViolation(); });
+        document.addEventListener('visibilitychange', () => { if (document.hidden && drillActive && !submitted) handleViolation(); });
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', (e) => {
+            if (drillActive && !submitted && (e.key === 'PrintScreen' || (e.ctrlKey && (e.key === 'p' || e.key === 's')))) {
+                e.preventDefault();
+                alert("⚠️ Screenshot/print actions are disabled during the drill.");
+            }
+        });
+        let resizeCount = 0;
+        window.addEventListener('resize', () => {
+            if (drillActive && !submitted && window.innerWidth < 800) {
+                resizeCount++;
+                if (resizeCount === 1) alert("⚠️ Please maintain full window for the exam.");
+                else if (resizeCount >= 2) handleViolation();
+            }
+        });
+    }
+
+    function handleViolation() {
+        tabViolations++;
+        if (tabViolations === 1) alert("⚠️ WARNING: Leaving the drill page is prohibited. Next violation will auto-submit.");
+        else if (tabViolations >= 2) {
+            alert("❌ FORCE SUBMISSION: You violated the policy. Test is auto-submitted.");
+            forceSubmitDrill();
+        }
+    }
+
+    function forceSubmitDrill() {
+        if (submitted) return;
+        if (drillTimerInterval) clearInterval(drillTimerInterval);
+        submitted = true;
+        drillActive = false;
+        gatherAndShowSummary();
+    }
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+        const name = document.getElementById('studentName').value.trim();
+        const id = document.getElementById('studentId').value.trim();
+        const prog = document.getElementById('studyProgram').value.trim();
+        if (!name || !id || !prog) { alert("Please fill all fields."); return; }
+        student = { name, id, program: prog };
+        currentDay = document.getElementById('daySelect').value;
+        loginDiv.classList.add('hidden');
+        listDiv.classList.remove('hidden');
+        renderVocabList();
+        startListTimer();
+    });
+
+    function renderVocabList() {
+        const vocab = getVocabByDay(currentDay);
+        const container = document.getElementById('vocabListContainer');
+        container.innerHTML = '';
+        let dayLabel = currentDay.toUpperCase();
+        document.getElementById('listDayLabel').innerText = dayLabel;
+        vocab.forEach(v => {
+            const div = document.createElement('div'); div.className = 'vocab-item';
+            div.innerHTML = `<div class="vocab-word">${v.word}</div><div>📖 ${v.eng} &nbsp;—&nbsp; 🇮🇩 ${v.ind}</div>`;
+            container.appendChild(div);
+        });
+    }
+
+    function startListTimer() {
+        if (listTimerInterval) clearInterval(listTimerInterval);
+        listTimerInterval = setInterval(() => {
+            if (listTime <= 0) {
+                clearInterval(listTimerInterval);
+                alert("Time for vocabulary review finished! Moving to drill.");
+                proceedToDrill();
+            } else {
+                listTime--;
+                let mins = Math.floor(listTime / 60);
+                let secs = listTime % 60;
+                document.getElementById('listTimer').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+    }
+
+    document.getElementById('proceedToDrillBtn').addEventListener('click', () => {
+        if (listTimerInterval) clearInterval(listTimerInterval);
+        proceedToDrill();
+    });
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function proceedToDrill() {
+        listDiv.classList.add('hidden');
+        drillDiv.classList.remove('hidden');
+        buildDrillQuestions();
+        startDrillTimer();
+        drillActive = true;
+        submitted = false;
+        tabViolations = 0;
+    }
+
+    function buildDrillQuestions() {
+        const dayData = practiceQuestions[currentDay];
+        if (!dayData) return;
+        
+        const shuffledPartA = shuffleArray([...dayData.partA]);
+        const shuffledPartB = shuffleArray([...dayData.partB]);
+        const wordBankList = shuffleArray([...dayData.wordBank]);
+        
+        currentQuestionsStore = {
+            partA: shuffledPartA.map(q => q.text),
+            partB: shuffledPartB.map(q => q.text),
+            partC: []
+        };
+        
+        const container = document.getElementById('drillQuestionsContainer');
+        container.innerHTML = '';
+        selectedAnswers = {};
+        
+        const titleA = document.createElement('h3'); titleA.className = 'section-title'; titleA.innerText = 'Part A: Fill in the blanks (Questions 1-25)';
+        container.appendChild(titleA);
+        
+        shuffledPartA.forEach((q, idx) => {
+            const qDiv = document.createElement('div'); qDiv.className = 'question-card';
+            qDiv.innerHTML = `
+                <div class="question-text">${idx + 1}. ${q.text}</div>
+                <div class="options">
+                    ${q.options.map((opt, optIdx) => `<div class="option"><label><input type="radio" name="q_partA_${idx}" value="${opt}"> ${opt}</label></div>`).join('')}
+                </div>`;
+            container.appendChild(qDiv);
+            const radios = qDiv.querySelectorAll('input');
+            radios.forEach(radio => radio.addEventListener('change', (e) => {
+                selectedAnswers[`partA_${idx}`] = e.target.value;
+            }));
+        });
+        
+        const titleB = document.createElement('h3'); titleB.className = 'section-title'; titleB.innerText = 'Part B: Choose the correct definition (Questions 26-40)';
+        container.appendChild(titleB);
+        
+        shuffledPartB.forEach((q, idx) => {
+            const qDiv = document.createElement('div'); qDiv.className = 'question-card';
+            qDiv.innerHTML = `
+                <div class="question-text">${26 + idx}. ${q.text}</div>
+                <div class="options">
+                    ${q.options.map((opt, optIdx) => `<div class="option"><label><input type="radio" name="q_partB_${idx}" value="${opt}"> ${opt}</label></div>`).join('')}
+                </div>`;
+            container.appendChild(qDiv);
+            const radios = qDiv.querySelectorAll('input');
+            radios.forEach(radio => radio.addEventListener('change', (e) => {
+                selectedAnswers[`partB_${idx}`] = e.target.value;
+            }));
+        });
+        
+        const bankDiv = document.createElement('div'); bankDiv.className = 'wordbank-box';
+        bankDiv.innerHTML = `<strong>📦 WORD BANK (For questions 41-50):</strong><br/>` + wordBankList.map(w => `<span class="wordbank-word">${w}</span>`).join('');
+        container.appendChild(bankDiv);
+        
+        const titleC = document.createElement('h3'); titleC.className = 'section-title'; titleC.innerText = 'Part C: Fill in the blanks using the Word Bank (Questions 41-50)';
+        container.appendChild(titleC);
+        
+        const partCSentences = {
+            day31: [
+                "The workers reported directly to the ______ at the construction site.",
+                "The scientist used a mathematical ______ to solve the problem.",
+                "The birds flew in a V-shaped ______ during migration.",
+                "Many tourists enjoy learning about ______ cultures.",
+                "Please move ______ and continue your presentation.",
+                "The company decided to ______ a new branch in the city.",
+                "The loud thunder did not ______ the experienced hikers.",
+                "We should keep the classroom clean and ______ the air by opening the windows.",
+                "She felt ______ to receive a scholarship.",
+                "The meeting requires ______ attire."
+            ],
+            day32: [
+                "My grandparents created a family ______ showing our ancestors.",
+                "After work, we usually ______ for dinner.",
+                "The workers expect to ______ at the end of the month.",
+                "The children had a lot of ______ at the amusement park.",
+                "The driver stopped at a ______ to buy fuel.",
+                "The manager wanted to discuss the issue ______ before making a decision.",
+                "The angry customer spoke with great ______.",
+                "Many mushrooms belong to the ______ kingdom.",
+                "The soldier received orders from a ______.",
+                "Passengers should ______ the bus at the next stop."
+            ],
+            day33: [
+                "The volunteers gathered as a ______ to clean the beach.",
+                "The astronaut studied how ______ affects movement in space.",
+                "The school invited a famous scientist as the ______.",
+                "The organization received a research ______ from the government.",
+                "Employees may submit a formal ______ if they experience unfair treatment.",
+                "The company cannot ______ effectively without clear policies.",
+                "The farmer stored the harvested wheat in a ______.",
+                "Students should ______ the main idea before writing a summary.",
+                "The new product contributed to the company's rapid ______.",
+                "Customers appreciated the product's quality ______."
+            ]
+        };
+        
+        const sentences = partCSentences[currentDay] || partCSentences.day31;
+        const shuffledSentences = shuffleArray([...sentences]);
+        currentQuestionsStore.partC = shuffledSentences;
+        
+        shuffledSentences.forEach((sentence, idx) => {
+            const fbDiv = document.createElement('div'); fbDiv.className = 'question-card';
+            fbDiv.innerHTML = `
+                <div class="question-text">${41 + idx}. ${sentence}</div>
+                <input type="text" placeholder="Type a word from the Word Bank above" data-fb-idx="${idx}" style="width:100%; background:#0a0e1a; border:1px solid #3a4468; padding:12px; border-radius:16px;">`;
+            const inputField = fbDiv.querySelector('input');
+            inputField.addEventListener('input', (e) => { selectedAnswers[`partC_${idx}`] = e.target.value.trim(); });
+            container.appendChild(fbDiv);
+        });
+    }
+
+    function startDrillTimer() {
+        if (drillTimerInterval) clearInterval(drillTimerInterval);
+        drillTimerInterval = setInterval(() => {
+            if (drillTime <= 0) {
+                clearInterval(drillTimerInterval);
+                if (!submitted) { alert("⏰ Time's up! Auto-submitting."); forceSubmitDrill(); }
+            } else {
+                drillTime--;
+                let mins = Math.floor(drillTime / 60);
+                let secs = drillTime % 60;
+                document.getElementById('drillTimer').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+        }, 1000);
+    }
+
+    function gatherAndShowSummary() {
+        if (submitted) return;
+        submitted = true;
+        drillActive = false;
+        if (drillTimerInterval) clearInterval(drillTimerInterval);
+        
+        let summaryHtml = `<div class="print-pattern">
+            <h3>📋 ANSWER SUMMARY — ${student.name} (${student.id})</h3>
+            <p><strong>Program:</strong> ${student.program} | <strong>Day:</strong> ${currentDay.toUpperCase()} | <strong>Submitted:</strong> ${new Date().toLocaleString()}</p>
+            <hr>
+            <h4>Part A: Fill in the blanks (Questions 1-25)</h4>`;
+        
+        for (let i = 0; i < 25; i++) {
+            let ans = selectedAnswers[`partA_${i}`] || "(not answered)";
+            let questionText = currentQuestionsStore.partA[i] || `Question ${i+1}`;
+            summaryHtml += `<div class="summary-question"><strong>Q${i+1}:</strong> ${questionText}<br><div class="summary-answer">📝 Your answer: ${ans}</div></div>`;
+        }
+        
+        summaryHtml += `<hr><h4>Part B: Choose the correct definition (Questions 26-40)</h4>`;
+        for (let i = 0; i < 15; i++) {
+            let ans = selectedAnswers[`partB_${i}`] || "(not answered)";
+            let questionText = currentQuestionsStore.partB[i] || `Definition ${i+1}`;
+            summaryHtml += `<div class="summary-question"><strong>Q${26 + i}:</strong> ${questionText}<br><div class="summary-answer">📝 Your answer: ${ans}</div></div>`;
+        }
+        
+        summaryHtml += `<hr><h4>Part C: Fill in the blank using Word Bank (Questions 41-50)</h4>`;
+        for (let i = 0; i < 10; i++) {
+            let ans = selectedAnswers[`partC_${i}`] || "(empty)";
+            let questionText = currentQuestionsStore.partC[i] || `Fill in the blank ${i+1}`;
+            summaryHtml += `<div class="summary-question"><strong>Q${41 + i}:</strong> ${questionText}<br><div class="summary-answer">📝 Your answer: ${ans}</div></div>`;
+        }
+        
+        summaryHtml += `<hr><footer style="margin-top:20px;">VOCAB DRILL — Week 12 Official Assessment Report | Generated from secure testing platform</footer></div>`;
+        document.getElementById('summaryContent').innerHTML = summaryHtml;
+        summaryPopup.classList.remove('hidden');
+    }
+
+    document.getElementById('submitDrillBtn').addEventListener('click', () => {
+        if (submitted) { alert("Already submitted."); return; }
+        gatherAndShowSummary();
+    });
+    document.getElementById('closeSummaryBtn').addEventListener('click', () => summaryPopup.classList.add('hidden'));
+    document.getElementById('printSummaryBtn').addEventListener('click', () => {
+        const printContents = document.getElementById('summaryContent').innerHTML;
+        const win = window.open();
+        win.document.write(`
+            <html><head><title>Vocab Drill Summary - ${student.name}</title>
+            <style>
+                body { font-family: 'Courier New', monospace, sans-serif; padding: 2rem; background: white; }
+                .print-pattern { background: repeating-linear-gradient(45deg, #f4f6fc 0px, #f4f6fc 3px, #fff 3px, #fff 15px); padding: 20px; border-radius: 12px; }
+                h3, h4 { color: #1e293b; }
+                .summary-question { margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; }
+                .summary-answer { margin-left: 20px; color: #475569; }
+                strong { color: #0f172a; }
+            </style>
+            </head><body>${printContents}</body></html>
+        `);
+        win.document.close();
+        win.print();
+    });
+    initAntiCheat();
+</script>
+</body>
+</html>
